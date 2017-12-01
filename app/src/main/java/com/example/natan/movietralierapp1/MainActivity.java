@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
-
+        mFavoritesAdapter=new FavoritesAdapter(this);
         mrecyclerView.setLayoutManager(mLayoutManager);
         mrecyclerView.setItemAnimator(new DefaultItemAnimator());
         build("popularity.desc");
@@ -129,16 +129,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data !=null) {
 
-            mFavoritesAdapter.swapCursor(data);
-        }
-        else
-        {
-            Toast.makeText(this, "Select your favorite movies", Toast.LENGTH_SHORT).show();
-        }
+
+        mFavoritesAdapter.swapCursor(data);
+
 
     }
+
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

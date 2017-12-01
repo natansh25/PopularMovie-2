@@ -40,6 +40,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
 
         Movie movie = getIntent().getParcelableExtra("data");
+        Toast.makeText(this, movie.getId().toString(), Toast.LENGTH_SHORT).show();
         txt_Title.setText(movie.getTitle());
         txt_Plot.setText(movie.getOverview());
         txt_Rating.setText(movie.getVoteAverage() + "/10");

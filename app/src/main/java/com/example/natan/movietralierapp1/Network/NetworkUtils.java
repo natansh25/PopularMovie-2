@@ -128,6 +128,8 @@ public class NetworkUtils {
             for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject currentMovie = movieArray.getJSONObject(i);
 
+                String id=currentMovie.getString("id");
+
                 String img_path = currentMovie.getString("poster_path");
 
                 String vote_average = currentMovie.getString("vote_average");
@@ -139,7 +141,7 @@ public class NetworkUtils {
                 String title = currentMovie.getString("title");
 
 
-                Movie movie1 = new Movie(img_path, title, release_date, vote_average, plot);
+                Movie movie1 = new Movie(id,img_path, title, release_date, vote_average, plot);
 
                 movie.add(movie1);
 

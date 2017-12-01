@@ -18,15 +18,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailActivity"
+        <activity
+            android:name=".DetailActivity"
             android:parentActivityName="com.example.natan.movietralierapp1.MainActivity">
 
             <meta-data
                 android:name="android.support."
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
 
 
         </activity>
+
+
+        <provider
+            android:name="com.example.natan.movietralierapp1.Data.MovieContentProvider"
+            android:authorities="com.example.natan.movietralierapp1"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

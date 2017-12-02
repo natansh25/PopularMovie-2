@@ -1,13 +1,11 @@
 package com.example.natan.movietralierapp1;
 
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +17,7 @@ import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
-public class DetailActivity extends AppCompatActivity implements OnLikeListener {
+public class DetailActivity extends Activity implements OnLikeListener {
 
     private TextView txt_Title;
     private TextView txt_Plot;
@@ -43,8 +41,8 @@ public class DetailActivity extends AppCompatActivity implements OnLikeListener 
         Stetho.initializeWithDefaults(this);
 
 
-        ActionBar actionBar = this.getSupportActionBar();
-        getSupportActionBar();
+        ActionBar actionBar = this.getActionBar();
+        getActionBar();
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

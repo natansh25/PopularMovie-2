@@ -2,14 +2,13 @@ package com.example.natan.movietralierapp1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,20 +17,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
 
 import com.example.natan.movietralierapp1.Adapter.FavoritesAdapter;
 import com.example.natan.movietralierapp1.Adapter.Movie;
 import com.example.natan.movietralierapp1.Adapter.RecyclerMovie;
 import com.example.natan.movietralierapp1.Data.Contract;
 import com.example.natan.movietralierapp1.Network.NetworkUtils;
-import com.facebook.stetho.Stetho;
 
 import java.net.URL;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerMovie mRecyclerMovie;
     private RecyclerView mrecyclerView;
@@ -232,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                // android.content.Loader<Object> loader= getLoaderManager().getLoader(MOVIE_LOADER_ID);
               //  if (loader == null) {
-                getSupportLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+                getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
                 mrecyclerView.setAdapter(mFavoritesAdapter);
                // } else {
                //     loaderManager.restartLoader(MOVIE_LOADER_ID, bundle, this);

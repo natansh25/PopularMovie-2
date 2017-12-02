@@ -71,7 +71,7 @@ public class NetworkUtils {
                 .appendQueryParameter(SORT_BY, sort)
                 .appendQueryParameter(INCLUDE_ADULT, include_adult)
                 .appendQueryParameter(INCLUDE_VIDEO, include_video)
-                .appendQueryParameter(PAGE, page)
+               // .appendQueryParameter(PAGE, page)
                 .build();
 
         URL url = null;

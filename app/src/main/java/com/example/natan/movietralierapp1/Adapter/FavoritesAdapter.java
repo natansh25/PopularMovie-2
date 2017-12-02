@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.natan.movietralierapp1.Data.Contract;
+import com.example.natan.movietralierapp1.MainActivity;
 import com.example.natan.movietralierapp1.R;
 import com.squareup.picasso.Picasso;
 
@@ -21,9 +22,11 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
 
     private Cursor mCursor;
     private Context mContext;
+    private RecyclerMovie.ListItemClickListener mListItemClickListener;
 
 
-    public FavoritesAdapter(Context context) {
+    public FavoritesAdapter(RecyclerMovie.ListItemClickListener clickListener, Context context) {
+        this.mListItemClickListener=clickListener;
         this.mContext = context;
     }
 
@@ -74,7 +77,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
     }
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView img_movie;
 
@@ -82,6 +85,24 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
             super(itemView);
 
             img_movie = itemView.findViewById(R.id.imageView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCursor.moveToPosition(getAdapterPosition());
+
+            String id=mCursor.getString(mCursor.getColumnIndex(Contract.Entry.COLUMN_MOVIE_ID));
+            String posterUrl=mCursor.getString(mCursor.getColumnIndex(Contract.Entry.COLUMN_POSTER_PATH));
+            String title=mCursor.getString(mCursor.getColumnIndex(Contract.Entry.COLUMN_MOVIE_TITLE));
+            String release_date=mCursor.getString(mCursor.getColumnIndex(Contract.Entry.COLUMN_MOVIE_DATE));
+            String vote=mCursor.getString(mCursor.getColumnIndex(Contract.Entry.COLUMN_MOVIE_VOTE));
+            String overview=mCursor.getString(mCursor.getColumnIndex(Contract.Entry.COLUMN_MOVIE_OVERVIEW));
+
+            Movie movie=new Movie( id, posterUrl,  title,  release_date,  vote, overview);
+            mListItemClickListener.onListItemClick(movie);
+
+
         }
     }
 }

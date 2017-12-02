@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.natan.movietralierapp1.Adapter.FavoritesAdapter;
 import com.example.natan.movietralierapp1.Adapter.Movie;
@@ -29,6 +31,7 @@ import java.util.List;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private Context context;
     private RecyclerMovie mRecyclerMovie;
     private RecyclerView mrecyclerView;
     private ProgressBar mProgressBar;
@@ -53,7 +56,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
-        mFavoritesAdapter=new FavoritesAdapter(this);
+      // mFavoritesAdapter=new FavoritesAdapter(this);
         mrecyclerView.setLayoutManager(mLayoutManager);
         mrecyclerView.setItemAnimator(new DefaultItemAnimator());
         build("popularity.desc");
@@ -150,6 +153,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     }
 
 
+
+
     //Creating inner class for Async Task
 
     public class MovieDbQUeryTask extends AsyncTask<URL, Void, List<Movie>> {
@@ -228,7 +233,15 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
                // android.content.Loader<Object> loader= getLoaderManager().getLoader(MOVIE_LOADER_ID);
               //  if (loader == null) {
-                getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+                mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
+                    @Override
+                    public void onListItemClick(Movie movie) {
+                        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                        intent.putExtra("data", movie);
+                        startActivity(intent);
+                    }
+                }, this);
                 mrecyclerView.setAdapter(mFavoritesAdapter);
                // } else {
                //     loaderManager.restartLoader(MOVIE_LOADER_ID, bundle, this);

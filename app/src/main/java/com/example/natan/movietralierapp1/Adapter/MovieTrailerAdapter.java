@@ -20,6 +20,7 @@ import java.util.List;
 public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapter.MyViewHolder> {
 
     private List<MovieTrailer> mMovieTrailerList;
+    private Context context;
 
     public MovieTrailerAdapter(List<MovieTrailer> movieTrailerList) {
         mMovieTrailerList = movieTrailerList;
@@ -38,9 +39,15 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MovieTrailer movieTrailer = mMovieTrailerList.get(position);
-        Context context = holder.img.getContext();
-        Picasso.with(context).load("https://www.youtube.com/watch?v=" + movieTrailer.getTrailer_key()).into(holder.img);
-        Log.i("picasso","https://www.youtube.com/watch?v=" + movieTrailer.getTrailer_key());
+
+        Picasso.with(context)
+                .load("http://img.youtube.com/vi/" + movieTrailer.getTrailer_key() +"/0.jpg")
+                .into(holder.img);
+
+
+
+
+        Log.i("picasso","http://img.youtube.com/vi/" + movieTrailer.getTrailer_key()+"/0.jpg");
 
     }
 

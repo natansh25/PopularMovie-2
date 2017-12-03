@@ -2,8 +2,10 @@ package com.example.natan.movietralierapp1.Network;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.natan.movietralierapp1.Adapter.Movie;
+import com.example.natan.movietralierapp1.Adapter.MovieTrailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +27,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     final static String MOVIE_DB_URL = "https://api.themoviedb.org/3/discover/movie";
+    final static String MOVIE_TRAILER_URL = "https://api.themoviedb.org/3/movie";
 
 
     final static String API_KEY = "api_key";
@@ -32,6 +35,11 @@ public class NetworkUtils {
     // Paste your Api key below......
     //Example final static String api_key="123456b8ghg68ca54g58155b4bd37dff";
     final static String api_key = "053130b8fdf68ca19c58155b4bd37bdd";
+
+    //MovieTrailer
+    /*
+   url to make =https://api.themoviedb.org/3/movie/440021/videos?api_key=053130b8fdf68ca19c58155b4bd37bdd&language=en-US
+    */
 
 
     final static String LANGUAGE = "language";
@@ -43,6 +51,7 @@ public class NetworkUtils {
     final static String include_video = "false";
     final static String PAGE = "page";
     final static String page = "1";
+    final static String MOVIE_ID = "movie_id";
 
 
     //Fetching the json response
@@ -61,6 +70,20 @@ public class NetworkUtils {
 
     }
 
+    //Fetching json Response of Movie Trailer
+
+    public static List<MovieTrailer> fetchMovieTrialerData(URL url)
+    {
+        String jsonResponse=null;
+        try {
+            jsonResponse=getResponseFromHttpUrl(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<MovieTrailer> movieTrailer=extractTrailerFeaturesFromJson(jsonResponse);
+        return  movieTrailer;
+    }
+
 
     //Building URL used to query MOVIEDB
 
@@ -71,7 +94,7 @@ public class NetworkUtils {
                 .appendQueryParameter(SORT_BY, sort)
                 .appendQueryParameter(INCLUDE_ADULT, include_adult)
                 .appendQueryParameter(INCLUDE_VIDEO, include_video)
-               // .appendQueryParameter(PAGE, page)
+                // .appendQueryParameter(PAGE, page)
                 .build();
 
         URL url = null;
@@ -128,7 +151,7 @@ public class NetworkUtils {
             for (int i = 0; i < movieArray.length(); i++) {
                 JSONObject currentMovie = movieArray.getJSONObject(i);
 
-                String id=currentMovie.getString("id");
+                String id = currentMovie.getString("id");
 
                 String img_path = currentMovie.getString("poster_path");
 
@@ -141,7 +164,7 @@ public class NetworkUtils {
                 String title = currentMovie.getString("title");
 
 
-                Movie movie1 = new Movie(id,img_path, title, release_date, vote_average, plot);
+                Movie movie1 = new Movie(id, img_path, title, release_date, vote_average, plot);
 
                 movie.add(movie1);
 
@@ -153,6 +176,74 @@ public class NetworkUtils {
         }
 
         return movie;
+    }
+
+
+    // All Network Functions For Movie Trailer ----------------------------------------------
+
+    //MovieTrailer
+    /*
+   url to make =https://api.themoviedb.org/3/movie/440021/videos?api_key=053130b8fdf68ca19c58155b4bd37bdd&language=en-US
+    */
+
+    // Method for building Trailer url
+    public static URL buildTrailerURl(String movieId) {
+        Uri builtUri = Uri.parse(MOVIE_TRAILER_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath("videos")
+                .appendQueryParameter(API_KEY, api_key)
+                .appendQueryParameter(LANGUAGE, language)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+        return url;
+    }
+
+
+    //Method for parsing jsondata
+
+    public static List<MovieTrailer> extractTrailerFeaturesFromJson(String movieTrailerJson) {
+
+        if (TextUtils.isEmpty((movieTrailerJson))) {
+            return null;
+        }
+
+        //creating empty array list to add the movies
+        List<MovieTrailer> movieTrailer = new ArrayList<>();
+
+        try {
+
+            JSONObject baseJsonResponse = new JSONObject(movieTrailerJson);
+
+
+            JSONArray movieArray = baseJsonResponse.getJSONArray("results");
+
+
+            for (int i = 0; i < movieArray.length(); i++) {
+                JSONObject currentMovie = movieArray.getJSONObject(i);
+
+                String trailer_key = currentMovie.getString("key");
+                Log.i("key",trailer_key);
+
+                MovieTrailer movieTrailers = new MovieTrailer(trailer_key);
+
+                movieTrailer.add(movieTrailers);
+
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return movieTrailer;
     }
 
 

@@ -22,10 +22,13 @@ import android.widget.Toast;
 
 import com.example.natan.movietralierapp1.Adapter.FavoritesAdapter;
 import com.example.natan.movietralierapp1.Adapter.Movie;
+import com.example.natan.movietralierapp1.Adapter.MovieTrailer;
 import com.example.natan.movietralierapp1.Adapter.RecyclerMovie;
 import com.example.natan.movietralierapp1.Data.Contract;
 import com.example.natan.movietralierapp1.Network.NetworkUtils;
+import com.example.natan.movietralierapp1.asyncTask.MovieTrailerAsyncTask;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -37,6 +40,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     private ProgressBar mProgressBar;
     private static final int MOVIE_LOADER_ID = 1;
     private FavoritesAdapter mFavoritesAdapter;
+
 
     // onSaveinstance varibale
 
@@ -54,9 +58,10 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         mrecyclerView = findViewById(R.id.recyclerView);
         mProgressBar = findViewById(R.id.progress_bar);
 
+
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
-      // mFavoritesAdapter=new FavoritesAdapter(this);
+        // mFavoritesAdapter=new FavoritesAdapter(this);
         mrecyclerView.setLayoutManager(mLayoutManager);
         mrecyclerView.setItemAnimator(new DefaultItemAnimator());
         build("popularity.desc");
@@ -136,7 +141,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     }
 
 
-
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
@@ -151,8 +155,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         // re-queries for all tasks
         //getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID , null, this);
     }
-
-
 
 
     //Creating inner class for Async Task
@@ -231,8 +233,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 break;
             case R.id.favorites:
 
-               // android.content.Loader<Object> loader= getLoaderManager().getLoader(MOVIE_LOADER_ID);
-              //  if (loader == null) {
+                // android.content.Loader<Object> loader= getLoaderManager().getLoader(MOVIE_LOADER_ID);
+                //  if (loader == null) {
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
                 mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
                     @Override
@@ -243,11 +245,11 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     }
                 }, this);
                 mrecyclerView.setAdapter(mFavoritesAdapter);
-               // } else {
-               //     loaderManager.restartLoader(MOVIE_LOADER_ID, bundle, this);
-              //  }
+                // } else {
+                //     loaderManager.restartLoader(MOVIE_LOADER_ID, bundle, this);
+                //  }
 
-              //as  break;
+                //as  break;
         }
 
         return super.onOptionsItemSelected(item);

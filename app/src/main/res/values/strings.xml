@@ -4,5 +4,6 @@
     <string name="setting_Popular">Most_Popular</string>
     <string name="setting_highestRated">Highest_rated</string>
     <string name="setting_favorites">Favorites</string>
+    <string name="action_share">SHARE</string>
 
 </resources>

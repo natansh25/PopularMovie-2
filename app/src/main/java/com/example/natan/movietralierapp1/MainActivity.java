@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -22,19 +24,15 @@ import android.widget.Toast;
 
 import com.example.natan.movietralierapp1.Adapter.FavoritesAdapter;
 import com.example.natan.movietralierapp1.Adapter.Movie;
-import com.example.natan.movietralierapp1.Adapter.MovieTrailer;
 import com.example.natan.movietralierapp1.Adapter.RecyclerMovie;
 import com.example.natan.movietralierapp1.Data.Contract;
 import com.example.natan.movietralierapp1.Network.NetworkUtils;
-import com.example.natan.movietralierapp1.asyncTask.MovieTrailerAsyncTask;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private Context context;
     private RecyclerMovie mRecyclerMovie;
     private RecyclerView mrecyclerView;
     private ProgressBar mProgressBar;
@@ -43,10 +41,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
 
     // onSaveinstance varibale
-
     private final static String MENU_SELECTED = "selected";
     private int selected = -1;
-    MenuItem menuItem;
 
 
     @Override
@@ -61,12 +57,12 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(MainActivity.this, 2);
 
-        // mFavoritesAdapter=new FavoritesAdapter(this);
         mrecyclerView.setLayoutManager(mLayoutManager);
         mrecyclerView.setItemAnimator(new DefaultItemAnimator());
         build("popularity.desc");
 
-        //onSavedInstance loading if exist
+
+        //onSavedInstance loading if exist-------------------------------------------------------------------------
 
         if (savedInstanceState != null) {
             selected = savedInstanceState.getInt(MENU_SELECTED);
@@ -75,17 +71,34 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 build("popularity.desc");
             } else if (selected == R.id.highest_Rated) {
                 build("vote_count.desc");
+            } else if (selected == R.id.favorites) {
+
+                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+                mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
+                    @Override
+                    public void onListItemClick(Movie movie) {
+                        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                        intent.putExtra("data", movie);
+                        startActivity(intent);
+                    }
+                }, this);
+                mrecyclerView.setAdapter(mFavoritesAdapter);
+
             } else {
                 build("popularity.desc");
             }
 
         }
+
+        //-------------------------------------------------------------------------------------------
     }
 
 
-    // for background query
     @SuppressLint("StaticFieldLeak")
     @Override
+
+    //  Loader for quering databse queries in background--------------------------------------------
+
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new AsyncTaskLoader<Cursor>(this) {
 
@@ -148,6 +161,9 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
     }
 
+    //Loader finsihed-------------------------------------------------------------------------------
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -157,7 +173,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     }
 
 
-    //Creating inner class for Async Task
+    //Creating inner class for Async Task-----------------------------------------------------------
 
     public class MovieDbQUeryTask extends AsyncTask<URL, Void, List<Movie>> {
 
@@ -171,35 +187,47 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         @Override
         protected List<Movie> doInBackground(URL... urls) {
+            List<Movie> resultm = null;
 
-            List<Movie> result = NetworkUtils.fetchMovieData(urls[0]);
-            return result;
+            if (isOnline()) {
+                List<Movie> result = NetworkUtils.fetchMovieData(urls[0]);
+                resultm = result;
+                return resultm;
+            }
+            return resultm;
         }
 
 
         @Override
         protected void onPostExecute(List<Movie> movies) {
 
+            if (isOnline() && movies != null) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+                mRecyclerMovie = new RecyclerMovie(MainActivity.this, movies, new RecyclerMovie.ListItemClickListener() {
+                    @Override
+                    public void onListItemClick(Movie movie) {
+                        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                        intent.putExtra("data", movie);
+                        startActivity(intent);
 
-            mProgressBar.setVisibility(View.INVISIBLE);
-            mRecyclerMovie = new RecyclerMovie(MainActivity.this, movies, new RecyclerMovie.ListItemClickListener() {
-                @Override
-                public void onListItemClick(Movie movie) {
-                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                    intent.putExtra("data", movie);
-                    startActivity(intent);
+                    }
+                });
 
-                }
-            });
 
-            mrecyclerView.setAdapter(mRecyclerMovie);
-            mRecyclerMovie.notifyDataSetChanged();
+                mrecyclerView.setAdapter(mRecyclerMovie);
+                mRecyclerMovie.notifyDataSetChanged();
+            } else {
+                Toast.makeText(MainActivity.this, "Check your Internet Connection !!", Toast.LENGTH_SHORT).show();
+            }
+
 
         }
     }
 
-    //onsaveInstanceState
+    //----------------------------------------------------------------------------------------------
 
+
+    //onsaveInstanceState
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt(MENU_SELECTED, selected);
@@ -208,7 +236,6 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
 
     // For menu settings
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -222,19 +249,28 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         int id = item.getItemId();
         switch (id) {
             case R.id.highest_Rated:
-                build("vote_count.desc");
-                selected = id;
+                if (isOnline()) {
+                    getActionBar().setTitle("HIGHEST RATED");
+                    build("vote_count.desc");
+                    selected = id;
+                } else {
+                    Toast.makeText(this, "Check your Internet Connection", Toast.LENGTH_SHORT).show();
+                }
 
                 break;
 
             case R.id.most_popular:
-                build("popularity.desc");
-                selected = id;
+                if (isOnline()) {
+                    getActionBar().setTitle("MOST POPULAR");
+                    build("popularity.desc");
+                    selected = id;
+                } else {
+                    Toast.makeText(this, "Check you Internet Connection !!", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.favorites:
 
-                // android.content.Loader<Object> loader= getLoaderManager().getLoader(MOVIE_LOADER_ID);
-                //  if (loader == null) {
+                getActionBar().setTitle("YOUR FAVORITES !!");
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
                 mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
                     @Override
@@ -245,11 +281,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     }
                 }, this);
                 mrecyclerView.setAdapter(mFavoritesAdapter);
-                // } else {
-                //     loaderManager.restartLoader(MOVIE_LOADER_ID, bundle, this);
-                //  }
+                selected = id;
 
-                //as  break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -260,4 +293,15 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         new MovieDbQUeryTask().execute(final_Url);
         return final_Url;
     }
+
+
+    // Function for checking is Network connection avaliable ?
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

@@ -59,7 +59,7 @@ public class NetworkUtils {
     final static String MOVIE_ID = "movie_id";
 
 
-    //Fetching the json response
+    //Fetching the json response--------------------------------------------------------------------
 
     public static List<Movie> fetchMovieData(URL url) {
 
@@ -75,7 +75,7 @@ public class NetworkUtils {
 
     }
 
-    //Fetching json Response of Movie Trailer
+    //Fetching json Response of Movie Trailer-------------------------------------------------------
 
     public static List<MovieTrailer> fetchMovieTrialerData(URL url) {
         String jsonResponse = null;
@@ -89,7 +89,7 @@ public class NetworkUtils {
     }
 
 
-    //Fetching json Response of Movie Review
+    //Fetching json Response of Movie Review--------------------------------------------------------
 
 
     public static List<MovieReview> fetchMovieReviewData(URL url) {

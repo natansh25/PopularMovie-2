@@ -1,24 +1,17 @@
 package com.example.natan.movietralierapp1.asyncTask;
 
-import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-
-import com.example.natan.movietralierapp1.Adapter.Movie;
-import com.example.natan.movietralierapp1.Adapter.MovieTrailer;
-import com.example.natan.movietralierapp1.Adapter.MovieTrailerAdapter;
-import com.example.natan.movietralierapp1.Network.NetworkUtils;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
 /**
  * Created by natan on 12/2/2017.
  */
 
 public class MovieTrailerAsyncTask {
 
+
+    /*
+    Was not able to seprate the Async task of MovieTrailer due to implementation errors.
+    Any suggestions on how to do this ?
+    The Async of MovieTrailer is implemented in DetailActivity class
+     */
 
 }
 

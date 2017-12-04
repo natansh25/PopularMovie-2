@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 public class MovieTrailer implements Parcelable {
-    String Base_url="https://www.youtube.com/watch?v=styIneSvfoA";
+
 
     String trailer_key;
 
@@ -31,12 +31,12 @@ public class MovieTrailer implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.Base_url);
+
         dest.writeString(this.trailer_key);
     }
 
     protected MovieTrailer(Parcel in) {
-        this.Base_url = in.readString();
+
         this.trailer_key = in.readString();
     }
 

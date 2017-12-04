@@ -21,7 +21,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
 
     public MovieReviewAdapter(List<MovieReview> movieReviews) {
 
-        this.mMovieReviews=movieReviews;
+        this.mMovieReviews = movieReviews;
 
     }
 
@@ -36,9 +36,9 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-    MovieReview movieReview=mMovieReviews.get(position);
-    holder.txt_author.setText(movieReview.getAuthor() + " :");
-    holder.txt_review.setText(movieReview.getMovieReview());
+        MovieReview movieReview = mMovieReviews.get(position);
+        holder.txt_author.setText(movieReview.getAuthor() + " :");
+        holder.txt_review.setText(movieReview.getMovieReview());
 
     }
 
@@ -47,17 +47,16 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
         return mMovieReviews.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder
-    {
-        TextView txt_author,txt_review;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView txt_author, txt_review;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            txt_author=itemView.findViewById(R.id.txtAuthor);
+            txt_author = itemView.findViewById(R.id.txtAuthor);
             // For underlining the textview
             txt_author.setPaintFlags(txt_author.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-            txt_review=itemView.findViewById(R.id.txtReview);
+            txt_review = itemView.findViewById(R.id.txtReview);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.example.natan.movietralierapp1.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +51,6 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
         Picasso.with(context)
                 .load("http://img.youtube.com/vi/" + movieTrailer.getTrailer_key() + "/0.jpg")
-                .placeholder(R.drawable.ic_launcher_foreground)
-                .error(R.drawable.ic_launcher_background)
                 .into(holder.img);
 
 

@@ -78,13 +78,13 @@ public class DetailActivity extends Activity implements OnLikeListener {
         ActionBar actionBar = this.getActionBar();
         getActionBar();
 
-        // for trailer adapter
+        // for trailer adapter----------------------------------------------------------------------
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        //for review adapter
+        //for review adapter------------------------------------------------------------------------
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
         manager.setAutoMeasureEnabled(true);
         mRecyclerViewReview.setLayoutManager(manager);
@@ -98,9 +98,6 @@ public class DetailActivity extends Activity implements OnLikeListener {
         }
 
         final Movie movie = getIntent().getParcelableExtra("data");
-
-
-        Toast.makeText(this, movie.getId().toString(), Toast.LENGTH_SHORT).show();
         txt_Title.setText(movie.getTitle());
         txt_Plot.setText(movie.getOverview());
         txt_Rating.setText(movie.getVoteAverage() + "/10");
@@ -108,7 +105,8 @@ public class DetailActivity extends Activity implements OnLikeListener {
         Picasso.with(img_Poster.getContext()).load("https://image.tmdb.org/t/p/w500" + movie.getImage()).into(img_Poster);
 
 
-        // pressing the button to save the list
+        // pressing the button to save the list to the content provider
+
         lykbtn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
@@ -135,12 +133,11 @@ public class DetailActivity extends Activity implements OnLikeListener {
         });
 
 
-        // for movie trailer
+        // for movie trailer------------------------------------------------------------------------
         URL url = NetworkUtils.buildTrailerURl(movie.getId());
         new MovieTrailerAsyncTask().execute(url);
 
-        // for movie review
-
+        // for movie review-------------------------------------------------------------------------
         URL url1 = NetworkUtils.buildUrlReview(movie.getId());
         new MovieReviewAsyncTask().execute(url1);
 
@@ -149,8 +146,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
     }
 
 
-    //Async task for Movie Trailer-----------------------------------------------
-
+    //Async task for Movie Trailer------------------------------------------------------------------
     public class MovieTrailerAsyncTask extends AsyncTask<URL, Void, List<MovieTrailer>> {
 
 
@@ -186,8 +182,8 @@ public class DetailActivity extends Activity implements OnLikeListener {
                         intent.addCategory(Intent.CATEGORY_BROWSABLE);
                         intent.setData(NetworkUtils.buildYoutubeUrl(movieTrailer.getTrailer_key()));
                         startActivity(intent);
-                        MovieTrailer share_link=movies.get(0);
-                        First_trailer_link=share_link.getTrailer_key();
+                        MovieTrailer share_link = movies.get(0);
+                        First_trailer_link = share_link.getTrailer_key();
 
                     }
                 });
@@ -200,6 +196,8 @@ public class DetailActivity extends Activity implements OnLikeListener {
         }
     }
 
+
+    //AsyncTask For Movie Review--------------------------------------------------------------------
 
     public class MovieReviewAsyncTask extends AsyncTask<URL, Void, List<MovieReview>> {
         @Override
@@ -234,6 +232,12 @@ public class DetailActivity extends Activity implements OnLikeListener {
         }
     }
 
+
+    //menu for sharing the first link of the movie (extra implementation !!)
+    //share link only works when once any trailer is played after that share links succcessfully works
+    //as the fetching of the first trailer link is set onclickListner
+    //Any suggestions how to reslove this?
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.share, menu);
@@ -249,7 +253,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
 
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject here");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.valueOf(NetworkUtils.buildYoutubeUrl(First_trailer_link)));
                 Log.i("share", String.valueOf(NetworkUtils.buildYoutubeUrl(First_trailer_link)));
                 startActivity(Intent.createChooser(sharingIntent, "Share your Favorite Movie Trailer !!"));
@@ -261,6 +265,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
     }
 
+    // Function for checking the Network connectivity-----------------------------------------------
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -1,5 +1,6 @@
 package com.example.natan.movietralierapp1.Adapter;
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +37,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
     MovieReview movieReview=mMovieReviews.get(position);
-    holder.txt_author.setText(movieReview.getAuthor());
+    holder.txt_author.setText(movieReview.getAuthor() + " :");
     holder.txt_review.setText(movieReview.getMovieReview());
 
     }
@@ -53,6 +54,9 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
         public MyViewHolder(View itemView) {
             super(itemView);
             txt_author=itemView.findViewById(R.id.txtAuthor);
+            // For underlining the textview
+            txt_author.setPaintFlags(txt_author.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
             txt_review=itemView.findViewById(R.id.txtReview);
         }
     }

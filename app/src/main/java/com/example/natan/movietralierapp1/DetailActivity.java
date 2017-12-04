@@ -121,8 +121,6 @@ public class DetailActivity extends Activity implements OnLikeListener {
                 contentValues.put(Contract.Entry.COLUMN_POSTER_PATH, movie.getImage());
 
                 Uri uri = getContentResolver().insert(Contract.Entry.CONTENT_URI, contentValues);
-                Toast.makeText(DetailActivity.this, uri.toString(), Toast.LENGTH_SHORT).show();
-
 
             }
 
@@ -241,7 +239,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.share, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
 

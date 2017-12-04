@@ -1,10 +1,15 @@
-# MovieTrailerApp
+# Popular Movies, Stage 2
 Generate your own API_KEY from "themoviedb.org" and replace it in NetworkUtils.java String api_key = ""
 
 # Screenshots
 
-![main](https://user-images.githubusercontent.com/5525105/33155412-9277c770-cfbe-11e7-9ae0-3035724b7864.png)
+![main1](https://user-images.githubusercontent.com/5525105/33575565-0ac56bba-d90b-11e7-882c-8639156dc603.png)
 
 
-![detailactivity](https://user-images.githubusercontent.com/5525105/33155416-973b97dc-cfbe-11e7-904e-ee7d61ccf709.png)
+![main 2](https://user-images.githubusercontent.com/5525105/33575782-c46656b0-d90b-11e7-8f2d-146f1cecdf84.png)
+
+
+![main3](https://user-images.githubusercontent.com/5525105/33575796-cfc00ff6-d90b-11e7-8f5f-d2574e1f44ad.png)
+
+
 

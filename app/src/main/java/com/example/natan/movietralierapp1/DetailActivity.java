@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.natan.movietralierapp1.Adapter.Movie;
+import com.example.natan.movietralierapp1.Adapter.MovieReview;
+import com.example.natan.movietralierapp1.Adapter.MovieReviewAdapter;
 import com.example.natan.movietralierapp1.Adapter.MovieTrailer;
 import com.example.natan.movietralierapp1.Adapter.MovieTrailerAdapter;
 import com.example.natan.movietralierapp1.Data.Contract;
@@ -40,14 +42,18 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
     private LikeButton lykbtn;
 
-
+    // for Trailer
     private RecyclerView mRecyclerView;
     private MovieTrailerAdapter mMovieTrailerAdapter;
+
+    //for review
+    private RecyclerView mRecyclerViewReview;
+    private MovieReviewAdapter mMovieReviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.detail_activity_2);
+        setContentView(R.layout.activity_detail);
         txt_Title = findViewById(R.id.title);
         img_Poster = findViewById(R.id.image_poster);
         txt_Plot = findViewById(R.id.plot);
@@ -56,17 +62,26 @@ public class DetailActivity extends Activity implements OnLikeListener {
         lykbtn = findViewById(R.id.star_button);
         lykbtn.setOnLikeListener(this);
         mRecyclerView = findViewById(R.id.recycler_trailer);
+        mRecyclerViewReview = findViewById(R.id.recycler_review);
         Stetho.initializeWithDefaults(this);
 
 
         ActionBar actionBar = this.getActionBar();
         getActionBar();
 
-
+        // for trailer adapter
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        //for review adapter
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        manager.setAutoMeasureEnabled(true);
+        mRecyclerViewReview.setLayoutManager(manager);
+        mRecyclerViewReview.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        mRecyclerViewReview.setItemAnimator(new DefaultItemAnimator());
+
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -109,8 +124,15 @@ public class DetailActivity extends Activity implements OnLikeListener {
             }
         });
 
+
+        // for movie trailer
         URL url = NetworkUtils.buildTrailerURl(movie.getId());
         new MovieTrailerAsyncTask().execute(url);
+
+        // for movie review
+
+        URL url1 = NetworkUtils.buildUrlReview(movie.getId());
+        new MovieReviewAsyncTask().execute(url1);
 
     }
 
@@ -156,6 +178,34 @@ public class DetailActivity extends Activity implements OnLikeListener {
             mRecyclerView.setAdapter(mMovieTrailerAdapter);
 
             mMovieTrailerAdapter.notifyDataSetChanged();
+        }
+    }
+
+
+    public class MovieReviewAsyncTask extends AsyncTask<URL, Void, List<MovieReview>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected List<MovieReview> doInBackground(URL... urls) {
+
+            List<MovieReview> movieReviews = NetworkUtils.fetchMovieReviewData(urls[0]);
+            Log.i("result", String.valueOf(movieReviews));
+            return movieReviews;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieReview> movieReviews) {
+
+            mMovieReviewAdapter = new MovieReviewAdapter(movieReviews);
+            mRecyclerViewReview.setAdapter(mMovieReviewAdapter);
+            mMovieReviewAdapter.notifyDataSetChanged();
+
+
         }
     }
 

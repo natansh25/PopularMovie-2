@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.natan.movietralierapp1.Adapter.Movie;
+import com.example.natan.movietralierapp1.Adapter.MovieReview;
 import com.example.natan.movietralierapp1.Adapter.MovieTrailer;
 
 import org.json.JSONArray;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by natan on 11/18/2017.
  */
@@ -27,6 +30,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     final static String MOVIE_DB_URL = "https://api.themoviedb.org/3/discover/movie";
+    private static final String MOVIE_REVIEW_URL = "https://api.themoviedb.org/3/movie";
     final static String MOVIE_TRAILER_URL = "https://api.themoviedb.org/3/movie";
     private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch";
 
@@ -82,6 +86,21 @@ public class NetworkUtils {
         }
         List<MovieTrailer> movieTrailer = extractTrailerFeaturesFromJson(jsonResponse);
         return movieTrailer;
+    }
+
+
+    //Fetching json Response of Movie Review
+
+
+    public static List<MovieReview> fetchMovieReviewData(URL url) {
+        String jsonResponse = null;
+        try {
+            jsonResponse = getResponseFromHttpUrl(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<MovieReview> movieReviews = extractReviewFeaturesFromJson(jsonResponse);
+        return movieReviews;
     }
 
 
@@ -256,6 +275,70 @@ public class NetworkUtils {
         }
 
         return movieTrailer;
+    }
+
+
+    //MovieReview Network functions--------------------------------------------
+
+
+    public static URL buildUrlReview(String movieId) {
+        URL urlReview = null;
+        try {
+            Uri movieReviewQueryUri = Uri.parse(MOVIE_REVIEW_URL).buildUpon()
+                    .appendPath(movieId)
+                    .appendPath("reviews")
+                    .appendQueryParameter(API_KEY, api_key)
+                    .build();
+            urlReview = new URL(movieReviewQueryUri.toString());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + urlReview);
+
+        return urlReview;
+    }
+
+
+    //Method for parsing jsondata
+
+    public static List<MovieReview> extractReviewFeaturesFromJson(String movieTrailerJson) {
+
+        if (TextUtils.isEmpty((movieTrailerJson))) {
+            return null;
+        }
+
+        //creating empty array list to add the movies
+        List<MovieReview> movieReviews = new ArrayList<>();
+
+        try {
+
+            JSONObject baseJsonResponse = new JSONObject(movieTrailerJson);
+
+
+            JSONArray movieArray = baseJsonResponse.getJSONArray("results");
+
+
+            for (int i = 0; i < movieArray.length(); i++) {
+                JSONObject currentMovie = movieArray.getJSONObject(i);
+
+                String authorName = currentMovie.getString("author");
+
+                String reviewName = currentMovie.getString("content");
+
+                MovieReview movieReview = new MovieReview(reviewName, authorName);
+
+                movieReviews.add(movieReview);
+
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return movieReviews;
     }
 
 

@@ -10,11 +10,13 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,6 +93,38 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         }
 
         //-------------------------------------------------------------------------------------------
+
+        //Swipe to Delete
+
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                if (viewHolder instanceof RecyclerMovie.MyViewHolder) return 0;
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                int id = (int) viewHolder.itemView.getTag();
+                String stringId = Integer.toString(id);
+                Uri uri = Contract.Entry.CONTENT_URI;
+                uri = uri.buildUpon().appendPath(stringId).build();
+                getContentResolver().delete(uri, null, null);
+                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
+
+
+            }
+        }).attachToRecyclerView(mrecyclerView);
+
+
+
     }
 
 

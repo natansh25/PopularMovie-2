@@ -127,6 +127,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
             @Override
             public void unLiked(LikeButton likeButton) {
 
+                Toast.makeText(DetailActivity.this, "Swipe on the movie to delete it !!", Toast.LENGTH_SHORT).show();
             }
         });
 

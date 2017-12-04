@@ -4,6 +4,7 @@ package com.example.natan.movietralierapp1;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -64,7 +65,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.HORIZONTAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         if (actionBar != null) {
@@ -140,7 +141,18 @@ public class DetailActivity extends Activity implements OnLikeListener {
         @Override
         protected void onPostExecute(List<MovieTrailer> movies) {
 
-            mMovieTrailerAdapter = new MovieTrailerAdapter(movies);
+            mMovieTrailerAdapter = new MovieTrailerAdapter(movies, new MovieTrailerAdapter.ListItemClickListener() {
+                @Override
+                public void onListItemClick(MovieTrailer movieTrailer) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    intent.setData(NetworkUtils.buildYoutubeUrl(movieTrailer.getTrailer_key()));
+                    startActivity(intent);
+
+
+                }
+            });
             mRecyclerView.setAdapter(mMovieTrailerAdapter);
 
             mMovieTrailerAdapter.notifyDataSetChanged();

@@ -21,9 +21,21 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
     private List<MovieTrailer> mMovieTrailerList;
     private Context context;
+    private ListItemClickListener mListItemClickListener;
 
-    public MovieTrailerAdapter(List<MovieTrailer> movieTrailerList) {
+    //Interface
+
+    public interface ListItemClickListener {
+
+        void onListItemClick(MovieTrailer movieTrailer);
+    }
+
+
+
+    public MovieTrailerAdapter(List<MovieTrailer> movieTrailerList,ListItemClickListener listItemClickListener)
+    {
         mMovieTrailerList = movieTrailerList;
+        this.mListItemClickListener=listItemClickListener;
     }
 
     @Override
@@ -56,12 +68,21 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         return mMovieTrailerList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView img;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img_View_trailer);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            MovieTrailer videoClick = mMovieTrailerList.get(adapterPosition);
+            mListItemClickListener.onListItemClick(videoClick);
+
         }
     }
 

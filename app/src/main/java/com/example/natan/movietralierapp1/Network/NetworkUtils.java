@@ -28,6 +28,7 @@ public class NetworkUtils {
 
     final static String MOVIE_DB_URL = "https://api.themoviedb.org/3/discover/movie";
     final static String MOVIE_TRAILER_URL = "https://api.themoviedb.org/3/movie";
+    private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch";
 
 
     final static String API_KEY = "api_key";
@@ -72,16 +73,15 @@ public class NetworkUtils {
 
     //Fetching json Response of Movie Trailer
 
-    public static List<MovieTrailer> fetchMovieTrialerData(URL url)
-    {
-        String jsonResponse=null;
+    public static List<MovieTrailer> fetchMovieTrialerData(URL url) {
+        String jsonResponse = null;
         try {
-            jsonResponse=getResponseFromHttpUrl(url);
+            jsonResponse = getResponseFromHttpUrl(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<MovieTrailer> movieTrailer=extractTrailerFeaturesFromJson(jsonResponse);
-        return  movieTrailer;
+        List<MovieTrailer> movieTrailer = extractTrailerFeaturesFromJson(jsonResponse);
+        return movieTrailer;
     }
 
 
@@ -207,6 +207,18 @@ public class NetworkUtils {
     }
 
 
+    public static Uri buildYoutubeUrl(String trailer_key) {
+        Uri trailer_uri = Uri.parse(BASE_YOUTUBE_URL).buildUpon()
+                .appendQueryParameter("v", trailer_key)
+                .build();
+
+
+        return trailer_uri;
+
+
+    }
+
+
     //Method for parsing jsondata
 
     public static List<MovieTrailer> extractTrailerFeaturesFromJson(String movieTrailerJson) {
@@ -230,7 +242,7 @@ public class NetworkUtils {
                 JSONObject currentMovie = movieArray.getJSONObject(i);
 
                 String trailer_key = currentMovie.getString("key");
-                Log.i("key",trailer_key);
+                Log.i("key", trailer_key);
 
                 MovieTrailer movieTrailers = new MovieTrailer(trailer_key);
 

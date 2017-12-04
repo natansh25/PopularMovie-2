@@ -3,6 +3,6 @@ Generate your own API_KEY from "themoviedb.org" and replace it in NetworkUtils.j
 
 # Screenshots
 
-![main1](https://user-images.githubusercontent.com/5525105/33575565-0ac56bba-d90b-11e7-882c-8639156dc603.png height="534" width="300")
+![main1](https://user-images.githubusercontent.com/5525105/33575565-0ac56bba-d90b-11e7-882c-8639156dc603.png)
 
 

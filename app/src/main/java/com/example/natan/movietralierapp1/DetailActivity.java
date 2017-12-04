@@ -4,7 +4,10 @@ package com.example.natan.movietralierapp1;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,7 +15,10 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +56,9 @@ public class DetailActivity extends Activity implements OnLikeListener {
     private RecyclerView mRecyclerViewReview;
     private MovieReviewAdapter mMovieReviewAdapter;
 
+    private ShareActionProvider mShareActionProvider;
+    public String First_trailer_link;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +94,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("DETAILS...");
         }
 
         final Movie movie = getIntent().getParcelableExtra("data");
@@ -134,6 +144,8 @@ public class DetailActivity extends Activity implements OnLikeListener {
         URL url1 = NetworkUtils.buildUrlReview(movie.getId());
         new MovieReviewAsyncTask().execute(url1);
 
+        //fetching the first trailer link to share youtube videos
+
     }
 
 
@@ -152,32 +164,39 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
         @Override
         protected List<MovieTrailer> doInBackground(URL... urls) {
-
-            List<MovieTrailer> result = NetworkUtils.fetchMovieTrialerData(urls[0]);
-            Log.i("result", String.valueOf(result));
-            return result;
-
+            List<MovieTrailer> movieTrailersm = null;
+            if (isOnline()) {
+                List<MovieTrailer> result = NetworkUtils.fetchMovieTrialerData(urls[0]);
+                Log.i("result", String.valueOf(result));
+                movieTrailersm = result;
+                return movieTrailersm;
+            }
+            return movieTrailersm;
         }
 
 
         @Override
-        protected void onPostExecute(List<MovieTrailer> movies) {
+        protected void onPostExecute(final List<MovieTrailer> movies) {
+            if (isOnline() && movies != null) {
+                mMovieTrailerAdapter = new MovieTrailerAdapter(movies, new MovieTrailerAdapter.ListItemClickListener() {
+                    @Override
+                    public void onListItemClick(MovieTrailer movieTrailer) {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                        intent.setData(NetworkUtils.buildYoutubeUrl(movieTrailer.getTrailer_key()));
+                        startActivity(intent);
+                        MovieTrailer share_link=movies.get(0);
+                        First_trailer_link=share_link.getTrailer_key();
 
-            mMovieTrailerAdapter = new MovieTrailerAdapter(movies, new MovieTrailerAdapter.ListItemClickListener() {
-                @Override
-                public void onListItemClick(MovieTrailer movieTrailer) {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setData(NetworkUtils.buildYoutubeUrl(movieTrailer.getTrailer_key()));
-                    startActivity(intent);
+                    }
+                });
+                mRecyclerView.setAdapter(mMovieTrailerAdapter);
 
-
-                }
-            });
-            mRecyclerView.setAdapter(mMovieTrailerAdapter);
-
-            mMovieTrailerAdapter.notifyDataSetChanged();
+                mMovieTrailerAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(DetailActivity.this, "Trailers cant be fetched #offline", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -190,23 +209,63 @@ public class DetailActivity extends Activity implements OnLikeListener {
 
         @Override
         protected List<MovieReview> doInBackground(URL... urls) {
+            List<MovieReview> movieReviewsm = null;
+            if (isOnline()) {
+                List<MovieReview> movieReviews = NetworkUtils.fetchMovieReviewData(urls[0]);
+                Log.i("result", String.valueOf(movieReviews));
+                movieReviewsm = movieReviews;
+                return movieReviewsm;
+            }
 
-            List<MovieReview> movieReviews = NetworkUtils.fetchMovieReviewData(urls[0]);
-            Log.i("result", String.valueOf(movieReviews));
-            return movieReviews;
-
-
+            return movieReviewsm;
         }
 
         @Override
         protected void onPostExecute(List<MovieReview> movieReviews) {
-
-            mMovieReviewAdapter = new MovieReviewAdapter(movieReviews);
-            mRecyclerViewReview.setAdapter(mMovieReviewAdapter);
-            mMovieReviewAdapter.notifyDataSetChanged();
+            if (isOnline() && movieReviews != null) {
+                mMovieReviewAdapter = new MovieReviewAdapter(movieReviews);
+                mRecyclerViewReview.setAdapter(mMovieReviewAdapter);
+                mMovieReviewAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(DetailActivity.this, "Reviews cant be fetched #offline", Toast.LENGTH_SHORT).show();
+            }
 
 
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.share, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_share:
+                Toast.makeText(this, "Sharing is caring", Toast.LENGTH_SHORT).show();
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Subject here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, String.valueOf(NetworkUtils.buildYoutubeUrl(First_trailer_link)));
+                Log.i("share", String.valueOf(NetworkUtils.buildYoutubeUrl(First_trailer_link)));
+                startActivity(Intent.createChooser(sharingIntent, "Share your Favorite Movie Trailer !!"));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 

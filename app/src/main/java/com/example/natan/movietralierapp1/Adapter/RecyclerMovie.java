@@ -53,7 +53,12 @@ public class RecyclerMovie extends RecyclerView.Adapter<RecyclerMovie.MyViewHold
 
         Movie movie = mMovieList.get(position);
         Context context = holder.img_movie.getContext();
-        Picasso.with(context).load("https://image.tmdb.org/t/p/w500" + movie.getImage()).into(holder.img_movie);
+        Picasso.with(context)
+                .load("https://image.tmdb.org/t/p/w500" + movie.getImage())
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_background)
+                .into(holder.img_movie);
+
         holder.bind(mMovieList.get(position), mOnClickListener);
 
 

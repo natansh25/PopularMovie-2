@@ -324,8 +324,10 @@ public class NetworkUtils {
                 JSONObject currentMovie = movieArray.getJSONObject(i);
 
                 String authorName = currentMovie.getString("author");
+                Log.i("author",authorName);
 
                 String reviewName = currentMovie.getString("content");
+                Log.i("review",reviewName);
 
                 MovieReview movieReview = new MovieReview(reviewName, authorName);
 

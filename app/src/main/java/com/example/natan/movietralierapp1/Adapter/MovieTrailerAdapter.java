@@ -31,11 +31,9 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     }
 
 
-
-    public MovieTrailerAdapter(List<MovieTrailer> movieTrailerList,ListItemClickListener listItemClickListener)
-    {
+    public MovieTrailerAdapter(List<MovieTrailer> movieTrailerList, ListItemClickListener listItemClickListener) {
         mMovieTrailerList = movieTrailerList;
-        this.mListItemClickListener=listItemClickListener;
+        this.mListItemClickListener = listItemClickListener;
     }
 
     @Override
@@ -53,13 +51,11 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         MovieTrailer movieTrailer = mMovieTrailerList.get(position);
 
         Picasso.with(context)
-                .load("http://img.youtube.com/vi/" + movieTrailer.getTrailer_key() +"/0.jpg")
+                .load("http://img.youtube.com/vi/" + movieTrailer.getTrailer_key() + "/0.jpg")
+                .placeholder(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.ic_launcher_background)
                 .into(holder.img);
 
-
-
-
-        Log.i("picasso","http://img.youtube.com/vi/" + movieTrailer.getTrailer_key()+"/0.jpg");
 
     }
 

@@ -7,4 +7,13 @@ package com.example.natan.movietralierapp1.asyncTask;
 public class MovieReviewAsyncTask {
 
 
+
+
+
+
+
+
+
+
+
 }

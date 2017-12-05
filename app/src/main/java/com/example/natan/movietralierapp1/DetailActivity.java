@@ -38,6 +38,8 @@ import com.squareup.picasso.Picasso;
 import java.net.URL;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class DetailActivity extends Activity implements OnLikeListener {
 
     private TextView txt_Title;
@@ -106,13 +108,14 @@ public class DetailActivity extends Activity implements OnLikeListener {
         Picasso.with(img_Poster.getContext()).load("https://image.tmdb.org/t/p/w500" + movie.getImage()).into(img_Poster);
 
 
-
-
         // pressing the button to save the list to the content provider
 
         lykbtn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
+
+                Toasty.success(DetailActivity.this, movie.getTitle() + " added to Favorites !!").show();
+
 
                 ContentValues contentValues = new ContentValues();
 
@@ -131,7 +134,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
             @Override
             public void unLiked(LikeButton likeButton) {
 
-                Toast.makeText(DetailActivity.this, "SWIPE TO DELETE...", Toast.LENGTH_SHORT).show();
+                Toasty.error(DetailActivity.this, "SWIPE TO DELETE !!").show();
 
             }
         });

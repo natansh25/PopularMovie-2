@@ -29,7 +29,7 @@ import static android.content.ContentValues.TAG;
 
 public class NetworkUtils {
 
-    final static String MOVIE_DB_URL = "https://api.themoviedb.org/3/discover/movie";
+    final static String MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/";
     private static final String MOVIE_REVIEW_URL = "https://api.themoviedb.org/3/movie";
     final static String MOVIE_TRAILER_URL = "https://api.themoviedb.org/3/movie";
     private static final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch";
@@ -39,7 +39,14 @@ public class NetworkUtils {
 
     // Paste your Api key below......
     //Example final static String api_key="123456b8ghg68ca54g58155b4bd37dff";
-    final static String api_key = "*****PASTE YOUR API KEY HERE*****";
+    final static String api_key = "053130b8fdf68ca19c58155b4bd37bdd";
+
+    //MovieTrailer s
+    /*
+   url to make =https://api.themoviedb.org/3/movie/440021/videos?api_key=053130b8fdf68ca19c58155b4bd37bdd&language=en-US
+
+   http://api.themoviedb.org/3/movie/popular?api_key=64f4f7bd4da8f94c04844bdc7faf18a8
+    */
 
 
     final static String LANGUAGE = "language";
@@ -49,9 +56,6 @@ public class NetworkUtils {
     final static String include_adult = "false";
     final static String INCLUDE_VIDEO = "include_video";
     final static String include_video = "false";
-    final static String PAGE = "page";
-    final static String page = "1";
-    final static String MOVIE_ID = "movie_id";
 
 
     //Fetching the json response--------------------------------------------------------------------
@@ -103,14 +107,10 @@ public class NetworkUtils {
 
     public static URL buildURl(String sort) {
         Uri builtUri = Uri.parse(MOVIE_DB_URL).buildUpon()
-                .appendQueryParameter(API_KEY, api_key)
-                .appendQueryParameter(LANGUAGE, language)
-                .appendQueryParameter(SORT_BY, sort)
-                .appendQueryParameter(INCLUDE_ADULT, include_adult)
-                .appendQueryParameter(INCLUDE_VIDEO, include_video)
-                // .appendQueryParameter(PAGE, page)
+                .appendPath(sort)
+                .appendQueryParameter(API_KEY,api_key)
                 .build();
-
+        Log.i("NewUrl", String.valueOf(builtUri));
         URL url = null;
         try {
             url = new URL(builtUri.toString());
@@ -319,10 +319,10 @@ public class NetworkUtils {
                 JSONObject currentMovie = movieArray.getJSONObject(i);
 
                 String authorName = currentMovie.getString("author");
-                Log.i("author", authorName);
+                Log.i("author",authorName);
 
                 String reviewName = currentMovie.getString("content");
-                Log.i("review", reviewName);
+                Log.i("review",reviewName);
 
                 MovieReview movieReview = new MovieReview(reviewName, authorName);
 

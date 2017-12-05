@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,8 @@ import com.example.natan.movietralierapp1.Network.NetworkUtils;
 import java.net.URL;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class MainActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerMovie mRecyclerMovie;
@@ -51,6 +54,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Toasty
+        configToasty();
 
 
         mrecyclerView = findViewById(R.id.recyclerView);
@@ -61,7 +66,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         mrecyclerView.setLayoutManager(mLayoutManager);
         mrecyclerView.setItemAnimator(new DefaultItemAnimator());
-        build("popularity.desc");
+        build("popular");
 
 
         //onSavedInstance loading if exist-------------------------------------------------------------------------
@@ -70,9 +75,9 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             selected = savedInstanceState.getInt(MENU_SELECTED);
 
             if (selected == -1) {
-                build("popularity.desc");
+                build("popular");
             } else if (selected == R.id.highest_Rated) {
-                build("vote_count.desc");
+                build("top-rated");
             } else if (selected == R.id.favorites) {
 
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
@@ -87,7 +92,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 mrecyclerView.setAdapter(mFavoritesAdapter);
 
             } else {
-                build("popularity.desc");
+                build("popular");
             }
 
         }
@@ -97,7 +102,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
         //Swipe to Delete
 
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -118,14 +123,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 Uri uri = Contract.Entry.CONTENT_URI;
                 uri = uri.buildUpon().appendPath(stringId).build();
                 Log.i("uri", String.valueOf(uri));
-               int rowsDeleted= getContentResolver().delete(uri, null, null);
-               Log.i("rows", String.valueOf(rowsDeleted));
+                int rowsDeleted = getContentResolver().delete(uri, null, null);
+                Log.i("rows", String.valueOf(rowsDeleted));
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
 
 
             }
         }).attachToRecyclerView(mrecyclerView);
-
 
 
     }
@@ -287,7 +291,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             case R.id.highest_Rated:
                 if (isOnline()) {
                     getActionBar().setTitle("HIGHEST RATED");
-                    build("vote_count.desc");
+                    build("top_rated");
                     selected = id;
                 } else {
                     Toast.makeText(this, "Check your Internet Connection", Toast.LENGTH_SHORT).show();
@@ -298,7 +302,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             case R.id.most_popular:
                 if (isOnline()) {
                     getActionBar().setTitle("MOST POPULAR");
-                    build("popularity.desc");
+                    build("popular");
                     selected = id;
                 } else {
                     Toast.makeText(this, "Check you Internet Connection !!", Toast.LENGTH_SHORT).show();
@@ -339,6 +343,20 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    //Function for setting Toast color (Toasty)
+    private void configToasty() {
+
+        Toasty.Config.getInstance().
+
+                setErrorColor(ContextCompat.getColor(this, R.color.error_color)).
+                setInfoColor(ContextCompat.getColor(this, R.color.info_color)).
+                setWarningColor(ContextCompat.getColor(this, R.color.warning_color)).
+                setSuccessColor(ContextCompat.getColor(this, R.color.success_color))
+                .apply();
+
+
     }
 
 }

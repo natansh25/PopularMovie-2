@@ -113,10 +113,13 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
                 int id = (int) viewHolder.itemView.getTag();
+                Log.i("id", String.valueOf(id));
                 String stringId = Integer.toString(id);
                 Uri uri = Contract.Entry.CONTENT_URI;
                 uri = uri.buildUpon().appendPath(stringId).build();
-                getContentResolver().delete(uri, null, null);
+                Log.i("uri", String.valueOf(uri));
+               int rowsDeleted= getContentResolver().delete(uri, null, null);
+               Log.i("rows", String.valueOf(rowsDeleted));
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivity.this);
 
 

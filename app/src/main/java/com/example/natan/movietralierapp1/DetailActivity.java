@@ -55,6 +55,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
     //for review
     private RecyclerView mRecyclerViewReview;
     private MovieReviewAdapter mMovieReviewAdapter;
+    public Uri uri2;
 
     private ShareActionProvider mShareActionProvider;
     public String First_trailer_link;
@@ -72,6 +73,7 @@ public class DetailActivity extends Activity implements OnLikeListener {
         lykbtn.setOnLikeListener(this);
         mRecyclerView = findViewById(R.id.recycler_trailer);
         mRecyclerViewReview = findViewById(R.id.recycler_review);
+
         Stetho.initializeWithDefaults(this);
 
 
@@ -105,6 +107,15 @@ public class DetailActivity extends Activity implements OnLikeListener {
         Picasso.with(img_Poster.getContext()).load("https://image.tmdb.org/t/p/w500" + movie.getImage()).into(img_Poster);
 
 
+
+        if (uri2!=null)
+        {   lykbtn.setLiked(true);
+
+        }
+        else
+        {
+            lykbtn.setLiked(false);
+        }
         // pressing the button to save the list to the content provider
 
         lykbtn.setOnLikeListener(new OnLikeListener() {
@@ -121,13 +132,15 @@ public class DetailActivity extends Activity implements OnLikeListener {
                 contentValues.put(Contract.Entry.COLUMN_POSTER_PATH, movie.getImage());
 
                 Uri uri = getContentResolver().insert(Contract.Entry.CONTENT_URI, contentValues);
+                uri2=uri;
 
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
 
-                Toast.makeText(DetailActivity.this, "Swipe on the movie to delete it !!", Toast.LENGTH_SHORT).show();
+
+
             }
         });
 

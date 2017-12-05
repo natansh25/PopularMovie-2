@@ -307,6 +307,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 break;
             case R.id.favorites:
 
+                selected = id;
                 getActionBar().setTitle("YOUR FAVORITES !!");
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
                 mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
@@ -318,7 +319,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     }
                 }, this);
                 mrecyclerView.setAdapter(mFavoritesAdapter);
-                selected = id;
+
 
         }
 

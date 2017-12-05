@@ -204,9 +204,8 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     protected void onResume() {
         super.onResume();
-
-        // re-queries for all tasks
-        //getSupportLoaderManager().restartLoader(MOVIE_LOADER_ID , null, this);
+        //re-queries for all tasks
+        //getLoaderManager().restartLoader(MOVIE_LOADER_ID , null, this);
     }
 
 

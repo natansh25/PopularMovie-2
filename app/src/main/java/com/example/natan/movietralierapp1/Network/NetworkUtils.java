@@ -41,11 +41,6 @@ public class NetworkUtils {
     //Example final static String api_key="123456b8ghg68ca54g58155b4bd37dff";
     final static String api_key = "*****PASTE YOUR API KEY HERE*****";
 
-    //MovieTrailer s
-    /*
-   url to make =https://api.themoviedb.org/3/movie/440021/videos?api_key=053130b8fdf68ca19c58155b4bd37bdd&language=en-US
-    */
-
 
     final static String LANGUAGE = "language";
     final static String language = "en-US";
@@ -324,10 +319,10 @@ public class NetworkUtils {
                 JSONObject currentMovie = movieArray.getJSONObject(i);
 
                 String authorName = currentMovie.getString("author");
-                Log.i("author",authorName);
+                Log.i("author", authorName);
 
                 String reviewName = currentMovie.getString("content");
-                Log.i("review",reviewName);
+                Log.i("review", reviewName);
 
                 MovieReview movieReview = new MovieReview(reviewName, authorName);
 

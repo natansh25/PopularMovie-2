@@ -73,13 +73,15 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         if (savedInstanceState != null) {
             selected = savedInstanceState.getInt(MENU_SELECTED);
+            Log.i("onsave", String.valueOf(savedInstanceState));
 
             if (selected == -1) {
                 build("popular");
             } else if (selected == R.id.highest_Rated) {
-                build("top-rated");
+                build("top_rated");
             } else if (selected == R.id.favorites) {
 
+                getActionBar().setTitle("YOUR FAVORITES !!");
                 getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
                 mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
                     @Override
@@ -257,7 +259,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 mrecyclerView.setAdapter(mRecyclerMovie);
                 mRecyclerMovie.notifyDataSetChanged();
             } else {
-                Toast.makeText(MainActivity.this, "Check your Internet Connection !!", Toast.LENGTH_SHORT).show();
+                Toasty.warning(MainActivity.this,"Check Your Internet Connection !!",Toast.LENGTH_SHORT).show();
             }
 
 
@@ -294,7 +296,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     build("top_rated");
                     selected = id;
                 } else {
-                    Toast.makeText(this, "Check your Internet Connection", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(MainActivity.this,"Check Your Internet Connection !!",Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -305,7 +307,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     build("popular");
                     selected = id;
                 } else {
-                    Toast.makeText(this, "Check you Internet Connection !!", Toast.LENGTH_SHORT).show();
+                    Toasty.warning(MainActivity.this,"Check Your Internet Connection !!",Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.favorites:

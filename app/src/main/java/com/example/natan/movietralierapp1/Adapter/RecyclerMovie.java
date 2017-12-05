@@ -52,6 +52,7 @@ public class RecyclerMovie extends RecyclerView.Adapter<RecyclerMovie.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         Movie movie = mMovieList.get(position);
+        holder.itemView.setTag(movie.getId());
         Context context = holder.img_movie.getContext();
         Picasso.with(context)
                 .load("https://image.tmdb.org/t/p/w500" + movie.getImage())

@@ -41,9 +41,10 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
 
         int idIndex = mCursor.getColumnIndex(Contract.Entry._ID);
         int posterIndex = mCursor.getColumnIndex(Contract.Entry.COLUMN_POSTER_PATH);
-
+        int MovieIdIndex=mCursor.getColumnIndex(Contract.Entry.COLUMN_MOVIE_ID);
         mCursor.moveToPosition(position);
-
+        final int id=mCursor.getInt(MovieIdIndex);
+        holder.itemView.setTag(id);
         String imgUrl = mCursor.getString(posterIndex);
         Log.i("tagu", imgUrl);
         Picasso.with(mContext).load("https://image.tmdb.org/t/p/w500" + imgUrl).into(holder.img_movie);

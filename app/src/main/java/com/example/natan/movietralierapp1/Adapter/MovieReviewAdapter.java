@@ -37,6 +37,7 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         MovieReview movieReview = mMovieReviews.get(position);
+
         holder.txt_author.setText(movieReview.getAuthor() + " :");
         holder.txt_review.setText(movieReview.getMovieReview());
 

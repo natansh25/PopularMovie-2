@@ -66,38 +66,48 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
 
         mrecyclerView.setLayoutManager(mLayoutManager);
         mrecyclerView.setItemAnimator(new DefaultItemAnimator());
-        build("popular");
+        //build("popular");
 
 
         //onSavedInstance loading if exist-------------------------------------------------------------------------
 
-        if (savedInstanceState != null) {
-            selected = savedInstanceState.getInt(MENU_SELECTED);
-            Log.i("onsave", String.valueOf(savedInstanceState));
 
-            if (selected == -1) {
-                build("popular");
-            } else if (selected == R.id.highest_Rated) {
-                build("top_rated");
-            } else if (selected == R.id.favorites) {
+        if (savedInstanceState == null) {
 
-                getActionBar().setTitle("YOUR FAVORITES !!");
-                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
-                mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
-                    @Override
-                    public void onListItemClick(Movie movie) {
-                        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                        intent.putExtra("data", movie);
-                        startActivity(intent);
-                    }
-                }, this);
-                mrecyclerView.setAdapter(mFavoritesAdapter);
+            build("popular");
 
-            } else {
-                build("popular");
+        } else {
+            if (savedInstanceState != null) {
+                selected = savedInstanceState.getInt(MENU_SELECTED);
+
+                if (selected == -1) {
+
+                    build("popular");
+                } else if (selected == R.id.highest_Rated) {
+                    getActionBar().setTitle("HIGHEST RATED");
+                    build("top_rated");
+                } else if (selected == R.id.favorites) {
+
+                    getActionBar().setTitle("YOUR FAVORITES !!");
+                    getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+                    mFavoritesAdapter = new FavoritesAdapter(new RecyclerMovie.ListItemClickListener() {
+                        @Override
+                        public void onListItemClick(Movie movie) {
+                            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                            intent.putExtra("data", movie);
+                            startActivity(intent);
+                        }
+                    }, this);
+                    mrecyclerView.setAdapter(mFavoritesAdapter);
+
+                } else if (selected == R.id.most_popular) {
+                    getActionBar().setTitle("MOST POPULAR");
+                    build("popular");
+                }
+
             }
-
         }
+
 
         //-------------------------------------------------------------------------------------------
 
@@ -190,6 +200,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        Log.i("cursordata", String.valueOf(data));
 
         mFavoritesAdapter.swapCursor(data);
 
@@ -259,7 +270,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                 mrecyclerView.setAdapter(mRecyclerMovie);
                 mRecyclerMovie.notifyDataSetChanged();
             } else {
-                Toasty.warning(MainActivity.this,"Check Your Internet Connection !!",Toast.LENGTH_SHORT).show();
+                Toasty.warning(MainActivity.this, "Check Your Internet Connection !!", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -296,7 +307,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     build("top_rated");
                     selected = id;
                 } else {
-                    Toasty.warning(MainActivity.this,"Check Your Internet Connection !!",Toast.LENGTH_SHORT).show();
+                    Toasty.warning(MainActivity.this, "Check Your Internet Connection !!", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -307,7 +318,7 @@ public class MainActivity extends Activity implements LoaderManager.LoaderCallba
                     build("popular");
                     selected = id;
                 } else {
-                    Toasty.warning(MainActivity.this,"Check Your Internet Connection !!",Toast.LENGTH_SHORT).show();
+                    Toasty.warning(MainActivity.this, "Check Your Internet Connection !!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.favorites:

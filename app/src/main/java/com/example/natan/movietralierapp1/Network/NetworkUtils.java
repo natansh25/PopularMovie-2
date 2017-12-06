@@ -41,12 +41,7 @@ public class NetworkUtils {
 
     final static String api_key = "*****PASTE YOUR API KEY HERE*****";
 
-    //MovieTrailer s
-    /*
-   url to make =https://api.themoviedb.org/3/movie/440021/videos?api_key=053130b8fdf68ca19c58155b4bd37bdd&language=en-US
 
-   http://api.themoviedb.org/3/movie/popular?api_key=64f4f7bd4da8f94c04844bdc7faf18a8
-    */
 
 
     final static String LANGUAGE = "language";
